@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Patients - Hospital Management System</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #1f2937;
+        }
+
+        .header {
+            background: #111827;
+            color: white;
+            padding: 20px 35px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 23px;
+        }
+
+        .header a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: auto;
+            padding: 30px;
+        }
+
+        .top-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .top-section h2 {
+            font-size: 25px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            margin-top: 6px;
+        }
+
+        .add-button {
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+
+            padding: 12px 18px;
+
+            border-radius: 8px;
+
+            font-weight: bold;
+        }
+
+        .add-button:hover {
+            background: #1d4ed8;
+        }
+
+        .stats {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+
+            padding: 20px;
+
+            margin-bottom: 20px;
+        }
+
+        .stats strong {
+            font-size: 25px;
+            display: block;
+            margin-top: 5px;
+        }
+
+        .search-box {
+            background: white;
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 10px;
+
+            padding: 20px;
+
+            margin-bottom: 20px;
+        }
+
+        .search-box form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-box input {
+            flex: 1;
+
+            padding: 12px;
+
+            border: 1px solid #d1d5db;
+
+            border-radius: 7px;
+
+            font-size: 14px;
+        }
+
+        .search-box button {
+            background: #374151;
+
+            color: white;
+
+            border: none;
+
+            padding: 12px 20px;
+
+            border-radius: 7px;
+
+            cursor: pointer;
+        }
+
+        .table-container {
+            background: white;
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 10px;
+
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 850px;
+        }
+
+        th {
+            background: #f9fafb;
+
+            color: #6b7280;
+
+            font-size: 12px;
+
+            text-transform: uppercase;
+
+            padding: 15px;
+
+            text-align: left;
+        }
+
+        td {
+            padding: 15px;
+
+            border-top: 1px solid #e5e7eb;
+
+            font-size: 14px;
+        }
+
+        .patient-name {
+            font-weight: bold;
+        }
+
+        .patient-id {
+            color: #2563eb;
+            font-weight: bold;
+        }
+
+        .action {
+            color: #2563eb;
+
+            text-decoration: none;
+
+            margin-right: 10px;
+        }
+
+        .action:hover {
+            text-decoration: underline;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 50px;
+            color: #6b7280;
+        }
+
+        .messages {
+            margin-bottom: 20px;
+        }
+
+        .message {
+            background: #dcfce7;
+            color: #166534;
+
+            padding: 12px 15px;
+
+            border-radius: 7px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header class="header">
+
+    <h1>
+        🏥 Hospital Management System
+    </h1>
+
+    <div>
+
+        <a href="/">
+            Dashboard
+        </a>
+
+        <a href="/admin/">
+            Admin
+        </a>
+
+    </div>
+
+</header>
+
+
+<div class="container">
+
+
+    {% if messages %}
+
+        <div class="messages">
+
+            {% for message in messages %}
+
+                <div class="message">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% endif %}
+
+
+    <div class="top-section">
+
+        <div>
+
+            <h2>
+                Patients
+            </h2>
+
+            <p class="subtitle">
+                Manage hospital patient records
+            </p>
+
+        </div>
+
+
+        <a
+            href="{% url 'patient_create' %}"
+            class="add-button">
+
+            + Add Patient
+
+        </a>
+
+    </div>
+
+
+    <div class="stats">
+
+        <span>
+            Total Patients
+        </span>
+
+        <strong>
+            {{ total_patients }}
+        </strong>
+
+    </div>
+
+
+    <div class="search-box">
+
+        <form method="get">
+
+            <input
+                type="text"
+                name="q"
+                value="{{ query }}"
+                placeholder="Search by patient ID, name, phone or email..."
+            >
+
+            <button type="submit">
+                Search
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <div class="table-container">
+
+        {% if patients %}
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Patient ID
+                    </th>
+
+                    <th>
+                        Patient Name
+                    </th>
+
+                    <th>
+                        Gender
+                    </th>
+
+                    <th>
+                        Blood Group
+                    </th>
+
+                    <th>
+                        Date of Birth
+                    </th>
+
+                    <th>
+                        Phone
+                    </th>
+
+                    <th>
+                        Actions
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+            {% for patient in patients %}
+
+                <tr>
+
+                    <td class="patient-id">
+                        {{ patient.patient_id }}
+                    </td>
+
+                    <td class="patient-name">
+
+                        {{ patient.first_name }}
+                        {{ patient.last_name }}
+
+                    </td>
+
+                    <td>
+                        {{ patient.gender }}
+                    </td>
+
+                    <td>
+                        {{ patient.blood_group|default:"-" }}
+                    </td>
+
+                    <td>
+                        {{ patient.date_of_birth }}
+                    </td>
+
+                    <td>
+                        {{ patient.phone }}
+                    </td>
+
+                    <td>
+
+                        <a
+                            class="action"
+                            href="{% url 'patient_detail' patient.pk %}">
+
+                            View
+
+                        </a>
+
+                        <a
+                            class="action"
+                            href="{% url 'patient_update' patient.pk %}">
+
+                            Edit
+
+                        </a>
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        {% else %}
+
+        <div class="empty">
+
+            <h3>
+                No patients found
+            </h3>
+
+            <p>
+                {% if query %}
+                    Try a different search.
+                {% else %}
+                    Add your first patient to get started.
+                {% endif %}
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+
+</div>
+
+
+</body>
+
+</html>

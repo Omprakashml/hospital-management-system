@@ -40,6 +40,13 @@ class Doctor(models.Model):
         max_length=50,
         choices=SPECIALIZATIONS
     )
+    department = models.ForeignKey(
+    'departments.Department',
+    on_delete=models.SET_NULL,
+    null=True,
+    blank=True,
+    related_name='doctors'
+    )
 
     qualification = models.CharField(
         max_length=150

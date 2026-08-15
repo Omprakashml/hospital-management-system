@@ -10,6 +10,7 @@ class DoctorAdmin(admin.ModelAdmin):
         'first_name',
         'last_name',
         'specialization',
+        'department',
         'qualification',
         'experience_years',
         'consultation_fee',
@@ -17,6 +18,7 @@ class DoctorAdmin(admin.ModelAdmin):
     )
 
     list_filter = (
+        'department',
         'specialization',
         'available',
         'joining_date',

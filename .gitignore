@@ -1,0 +1,40 @@
+# Virtual environment
+venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django
+*.log
+db.sqlite3
+media/
+
+# Environment variables
+.env
+.env.*
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing / coverage
+.coverage
+htmlcov/
+.pytest_cache/
+venv/
+__pycache__/
+*.py[cod]
+*.log
+db.sqlite3
+.env
+.env.*
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
